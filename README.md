@@ -15,10 +15,10 @@
 ## Example
 
 #### Before
-<center><img src="/images/before.png" height="500px"/></center>
+<center><img src="/images/before.jpg" height="500px"/></center>
 
 #### After
-<center><img src="/images/after.png" height="500px"/></center>
+<center><img src="/images/after.jpg" height="500px"/></center>
 
 ## Troubleshooting
 
