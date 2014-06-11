@@ -1,7 +1,7 @@
 ## Prerequisite
 
-- java 8
-- maven 3
+- Java 8 (Because it's new and shiny)
+- Javen 3
 
 ## Building
 
@@ -11,6 +11,14 @@
 
 - `java -jar asciicam-1.0-SNAPSHOT.one-jar.jar <IMAGE> <SCREEN WIDTH>`
 - ex: java -jar asciicam-1.0-SNAPSHOT.one-jar.jar foo.jpg 80
+
+## Example
+
+#### Before
+<center><img src="/images/before.png" height="500px"/></center>
+
+#### After
+<center><img src="/images/after.png" height="500px"/></center>
 
 ## Troubleshooting
 
