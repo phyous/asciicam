@@ -1,4 +1,4 @@
-package com.phyous.asciicam;
+package com.phyous.asciicam.lib;
 
 import java.awt.*;
 
@@ -9,7 +9,9 @@ public class TerminalPixel {
     private static final int TERMINAL_COLOR_WHITE = 37;
     private static final int MAX_INTENSITY = 256 * 3;
 
+    private boolean mMasked;
     private Color mRealPixelColor;
+
     public TerminalPixel(int rgbInt) {
         mRealPixelColor = new Color(rgbInt);
     }
@@ -20,6 +22,14 @@ public class TerminalPixel {
 
     public String getTerminalStr() {
         return String.format("\033[1;%dm%s", toTerminalColor(mRealPixelColor), toTerminalCharacter(mRealPixelColor));
+    }
+
+    public Color getRealColor() {
+        return mRealPixelColor;
+    }
+
+    public void setMasked(boolean val) {
+        mMasked = val;
     }
 
     private int toTerminalColor(Color color) {
@@ -38,7 +48,9 @@ public class TerminalPixel {
         int intensity = rgb.getRed() + rgb.getGreen() + rgb.getBlue();
         String character;
 
-        if (intensity < MAX_INTENSITY / 4) {
+        if(mMasked) {
+            character = " ";
+        } else if (intensity < MAX_INTENSITY / 4) {
             character = ".";
         } else if (intensity < (MAX_INTENSITY / 4) * 2) {
             character = "i";

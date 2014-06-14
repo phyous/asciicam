@@ -1,7 +1,7 @@
 ## Prerequisite
 
 - Java 8 (Because it's new and shiny)
-- Javen 3
+- Maven 3
 
 ## Building
 

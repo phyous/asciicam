@@ -1,6 +1,7 @@
-package com.phyous.asciicam;
+package com.phyous.asciicam.lib;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,7 +14,7 @@ import java.util.stream.IntStream;
 public class AsciiImage {
     private static final int DEFAULT_IMAGE_OUTPUT_WIDTH = 80;
     private BufferedImage mBufferedImage;
-    private List<String> processedImage;
+    private List<List<TerminalPixel>> rawImage;
 
     public AsciiImage(String filePath) {
         try {
@@ -45,20 +46,38 @@ public class AsciiImage {
     }
 
     public List<String> getProcessedImage(int width, int height) {
-        processedImage = IntStream.range(0, height).mapToObj(y -> {
+        return this.getRawImage(width, height, null).stream().map(row -> {
             StringBuilder sb = new StringBuilder();
-            IntStream.range(0, width).forEach(x -> {
-                sb.append(
-                        TerminalPixel.getPixel(
-                                mBufferedImage.getRGB(
-                                        x * widthScaleFactor(width),
-                                        y * heightScaleFactor(height)))
-                                .getTerminalStr());
-            }
-            );
+            row.forEach(pixel -> {
+                if(pixel == null) sb.append(" ");
+                else sb.append(pixel.getTerminalStr());
+            });
             return sb.toString();
-        }).collect(Collectors.toCollection(ArrayList<String>::new));
-        return processedImage;
+        }).collect(Collectors.toList());
+    }
+
+    public List<List<TerminalPixel>> getRawImage(int width, Color mask) {
+        int scaledHeight = (mBufferedImage.getHeight() * width) / mBufferedImage.getWidth();
+        return getRawImage(width, scaledHeight, mask);
+    }
+
+    public List<List<TerminalPixel>> getRawImage(int width, int height, Color mask) {
+        rawImage = IntStream.range(0, height).mapToObj((int y) ->
+                IntStream.range(0, width).mapToObj((int x) -> {
+                    TerminalPixel p = TerminalPixel.getPixel(mBufferedImage.getRGB(x * widthScaleFactor(width),
+                            y * heightScaleFactor(height)));
+                    if (mask == null) {
+                        return p;
+                    } else {
+                        if(p.getRealColor().equals(mask)) {
+                            p.setMasked(true);
+                            return p;
+                        }
+                        else return null;
+                    }
+                }).collect(Collectors.toCollection(ArrayList<TerminalPixel>::new)))
+                .collect(Collectors.toList());
+        return rawImage;
     }
 
     private int widthScaleFactor(int width) {
